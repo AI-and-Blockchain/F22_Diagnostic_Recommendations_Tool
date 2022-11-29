@@ -20,11 +20,24 @@ def transform_data(df):
 	generate a normalized dataframe for training
 	'''
 	q  = QuantileTransformer()
-	X = q.fit_transform(pima_diabetes)
+	X = q.fit_transform(df)
 	transformedDF = q.transform(X)
 	transformedDF = pd.DataFrame(X)
-	transformedDF.columns = pima_diabetes.columns
+	transformedDF.columns = df.columns
 	return transformedDF
+
+def get_models():
+	'''
+	Define here what models you want to run - maybe this can be parameterized
+	'''
+	random_state = 30
+
+	models = [
+		['Logistic Regression', LogisticRegression(random_state = random_state, solver='liblinear')],
+		['Decision Tree',DecisionTreeClassifier(random_state = random_state)],
+		['Random Forest', RandomForestClassifier(random_state = random_state)],
+	]
+	return models
 
 #Separate train dataset and test dataset
 def generate_train_test_split(transformedDF, test_size):
@@ -82,12 +95,7 @@ if __name__ == '__main__':
 	pima_diabetes = pd.read_csv('../../data/hospital1.csv', index_col=0)
 	transformedDF = transform_data(pima_diabetes)
 
-	random_state = 30
-	models = [
-		['Logistic Regression', LogisticRegression(random_state = random_state, solver='liblinear')],
-		['Decision Tree',DecisionTreeClassifier(random_state = random_state)],
-		['Random Forest', RandomForestClassifier(random_state = random_state)],
-	]
+	models = get_models()
 
 	x_train, x_test, y_train, y_test = generate_train_test_split(transformedDF, 0.30)
 	evaluate_model(models, x_train, y_train)
