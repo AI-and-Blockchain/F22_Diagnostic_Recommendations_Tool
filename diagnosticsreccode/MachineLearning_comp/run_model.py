@@ -92,7 +92,7 @@ def fit_and_predict_models(model, x_train, y_train, x_test, y_test):
 
 
 if __name__ == '__main__':
-	pima_diabetes = pd.read_csv('../../data/hospital1.csv', index_col=0)
+	pima_diabetes = pd.read_csv('data/hospital1.csv', index_col=0)
 	transformedDF = transform_data(pima_diabetes)
 
 	models = get_models()
