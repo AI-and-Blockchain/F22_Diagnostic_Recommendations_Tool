@@ -5,6 +5,10 @@ from algosdk.v2client import algod
 from algosdk.future import transaction
 
 # used to allow hospitals to send and update their patient data
+
+def trainModel():
+    pass
+    
 def uploadPatientData():
     pass
 
