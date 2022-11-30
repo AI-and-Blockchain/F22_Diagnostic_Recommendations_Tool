@@ -7,8 +7,8 @@ import pandas as pd
 
 from diagnosticsreccode.MachineLearning_comp import run_model
 
-# used to allow hospitals to send and update their patient data
 
+# train the model on singular hospital node
 def trainModel():
     pima_diabetes = pd.read_csv('data/hospital1.csv', index_col=0)
     transformedDF = run_model.transform_data(pima_diabetes)
@@ -23,13 +23,20 @@ def trainModel():
         run_model.fit_and_predict_models(model, x_train, y_train, x_test, y_test)
     
 
-def uploadPatientData():
+# send training results of singular hospital node 
+def uploadModelData():
     pass
 
-# send patient data to model
-def sendTransaction():
+def setUpTransaction(private_key, from_hospital, to_hospital):
     pass
 
-# revieve updates to patient data from model
-def recieveTransaction():
+# send training results of singular hospital node to another node
+def sendTransaction(private_key, from_hospital, to_hospital, data):
+    # make sure all hospitals have done a basic initial transaction to set up a connection 
+
+
+    pass
+
+# revieve updates to training model 
+def recieveTransaction(data):
     pass

@@ -16,8 +16,12 @@ def generate_hospital_node():
     print("private key: {}".format(a1_private_key))
     print("passphrase: {}".format(mnemonic.from_private_key(a1_private_key)))
 
+    # fund each account in the main statement 
+    # add the model to each hospital node in the main statement 
+
 # existing hospitals perform verification? or function that creates new account could have
 # some sort of check for this
+# NOTE for time being will be assumed that all hospital nodes that join have been verified
 def validate_new_node():
     pass
 
