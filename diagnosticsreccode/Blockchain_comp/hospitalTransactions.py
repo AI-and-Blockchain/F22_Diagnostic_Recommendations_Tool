@@ -5,14 +5,19 @@ from algosdk.v2client import algod
 from algosdk.future import transaction
 import pandas as pd
 
+<<<<<<< HEAD
 from algosdk.future.transaction import AssetConfigTxn, AssetTransferTxn, AssetFreezeTxn, wait_for_confirmation
+=======
+import sys
+sys.path.append('../')
+>>>>>>> 12c9510dc6b7e715d31da4d7ee3b37c969f1aca1
 
 from diagnosticsreccode.MachineLearning_comp import run_model
 
 
 # train the model on singular hospital node
 def trainModel():
-    pima_diabetes = pd.read_csv('data/hospital1.csv', index_col=0)
+    pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
     transformedDF = run_model.transform_data(pima_diabetes)
 
     random_state = 30
