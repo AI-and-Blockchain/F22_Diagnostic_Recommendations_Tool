@@ -5,12 +5,15 @@ from algosdk.v2client import algod
 from algosdk.future import transaction
 import pandas as pd
 
+import sys
+sys.path.append('../')
+
 from diagnosticsreccode.MachineLearning_comp import run_model
 
 
 # train the model on singular hospital node
 def trainModel():
-    pima_diabetes = pd.read_csv('data/hospital1.csv', index_col=0)
+    pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
     transformedDF = run_model.transform_data(pima_diabetes)
 
     random_state = 30

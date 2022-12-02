@@ -14,6 +14,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV, cross_val_score, StratifiedKFold, learning_curve, train_test_split
 from sklearn.metrics import classification_report
 
+import sys
+sys.path.append('../')
 
 def transform_data(df):
 	'''
@@ -88,11 +90,17 @@ def fit_and_predict_models(model, x_train, y_train, x_test, y_test):
 	model[1].fit(x_train, y_train)
 	y_pred_model = model[1].predict(x_test)
 	print('Model : ' + model[0])
-	print(classification_report(y_test, y_pred_model))
-
+	class_report = classification_report(y_test, y_pred_model, output_dict=True)
+	#converting report to dataframe
+	class_report = pd.DataFrame(class_report).T
+	class_report = class_report.set_axis(class_report.columns, axis=1, inplace=False).rename_axis('dimensions',axis=0)
+	class_report.reset_index(inplace=True)
+	#printing and returning report
+	print(class_report)
+	return class_report
 
 if __name__ == '__main__':
-	pima_diabetes = pd.read_csv('data/hospital1.csv', index_col=0)
+	pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
 	transformedDF = transform_data(pima_diabetes)
 
 	models = get_models()
