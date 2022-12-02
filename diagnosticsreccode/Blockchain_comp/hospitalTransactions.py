@@ -22,7 +22,7 @@ def trainModel(pick_max, pick_other_node_model):
     if pick_max:
         #if pick max then run all models and store the one with the best accuracy
         models = run_model.get_model(0)
-    if pick_other_node_model != 0:
+    if pick_other_node_model >= 1 and pick_other_node_model <= 3:
         models = run_model.get_model(pick_other_node_model)
 
     x_train, x_test, y_train, y_test = run_model.generate_train_test_split(transformedDF, 0.30)
@@ -142,4 +142,4 @@ def recieveTransaction(data):
 
 
 if __name__ == '__main__':
-    trainModel(True, 0)
+    trainModel(False, 2)

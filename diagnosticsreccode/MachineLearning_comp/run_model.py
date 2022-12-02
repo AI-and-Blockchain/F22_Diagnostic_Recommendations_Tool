@@ -51,7 +51,7 @@ def get_model(model_no):
 	models = get_models()
 
 	if model_no >= 1 and model_no <= 3:
-		return models[model_no]
+		return {model_no: models[model_no]}
 	else:
 		#invalid model_no and then in any case the max will be picked in report crunching
 		return models
