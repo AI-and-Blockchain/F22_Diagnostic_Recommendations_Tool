@@ -5,8 +5,8 @@ from algosdk.v2client import algod
 from algosdk.future import transaction
 
 # used to determine which hospital specific data came from 
-def initHospitalMap():
+def initHospitalMap(hospital_node, data):
     pass
 
-def isExistsHospital():
+def isExistsHospital(hospital_node):
     pass
