@@ -12,28 +12,48 @@ sys.path.append('../')
 from diagnosticsreccode.MachineLearning_comp import run_model
 
 
-
 # train the model on singular hospital node
+<<<<<<< HEAD
 def trainModel():
     pass #remove later
     pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
+=======
+def trainModel(pick_max, pick_other_node_model):
+    pima_diabetes = pd.read_csv('../data/hospital2.csv', index_col=0)
+>>>>>>> 043ca56f323d3ac5bb260efd46654f5f1e582ec8
     transformedDF = run_model.transform_data(pima_diabetes)
 
     random_state = 30
-    models = run_model.get_models()
+
+    if pick_max:
+        #if pick max then run all models and store the one with the best accuracy
+        models = run_model.get_model(0)
+    if pick_other_node_model >= 1 and pick_other_node_model <= 3:
+        models = run_model.get_model(pick_other_node_model)
 
     x_train, x_test, y_train, y_test = run_model.generate_train_test_split(transformedDF, 0.30)
-    run_model.evaluate_model(models, x_train, y_train)
+    #run_model.evaluate_model(models, x_train, y_train)
 
-    for model in models:
-        run_model.fit_and_predict_models(model, x_train, y_train, x_test, y_test)
+    model_output = {}
+
+    for mod_num in models.keys():
+        model = models[mod_num]
+
+        mod_classification_report = run_model.fit_and_predict_model(mod_num, model, x_train, y_train, x_test, y_test)
+        model_output[mod_num] = mod_classification_report
+
+    #print(model_output)
+    transact_out = run_model.get_model_output(model_output, pick_max, pick_other_node_model)
+    print(transact_out)
+    #this will need to be replaced with saving to ipfs
+    return transact_out
     
 
 def create_asset(public_key_from, private_key_from, public_key_to, from_hospital, to_hospital):
     pass
 
 # send training results of singular hospital node 
-def uploadModelData():
+def uploadModelData(pick_max, default_model):
     pass
 
 def setUpTransaction(private_key, from_hospital, to_hospital):
@@ -46,3 +66,7 @@ def sendTransaction(from_hospital, from_pk, from_sk, to_hospital, to_pk, to_sk, 
 # revieve updates to training model 
 def recieveTransaction(data):
     pass
+
+
+if __name__ == '__main__':
+    trainModel(False, 2)
