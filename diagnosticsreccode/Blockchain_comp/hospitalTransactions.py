@@ -13,14 +13,9 @@ from diagnosticsreccode.MachineLearning_comp import run_model
 
 
 # train the model on singular hospital node
-<<<<<<< HEAD
-def trainModel():
-    pass #remove later
-    pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
-=======
 def trainModel(pick_max, pick_other_node_model):
+    pass #remove later
     pima_diabetes = pd.read_csv('../data/hospital2.csv', index_col=0)
->>>>>>> 043ca56f323d3ac5bb260efd46654f5f1e582ec8
     transformedDF = run_model.transform_data(pima_diabetes)
 
     random_state = 30

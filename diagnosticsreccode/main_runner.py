@@ -18,8 +18,8 @@ def register_hospital_node():
 def print_patient_statistics():
     pass
 
-def train_hospital_model():
-    createNewHospital.trainModel()
+def train_hospital_model(pick_max, pick_other_node_model):
+    createNewHospital.trainModel(pick_max, pick_other_node_model)
 
 def share_updates():
     pass
@@ -34,17 +34,26 @@ if __name__ == '__main__':
                                 "[0] exit\n" +
                                 "\nselect: ")
     while(True):
-        if(user_response == "0"): break
+        if(user_response == "0"): 
+            break
+        
         elif(user_response == "1"):     # register a hospital
             # ask if user has a public key already, if not register and return key
             register_hospital_node()
+
         elif(user_response == "2"):     # print patient statistics
             print(2)
+
         elif(user_response == "3"):     # train model 
-            print(3)
+            pick_max = input("pick max: ")
+            pick_other_node_model = input("pick other node model: ")
+            train_hospital_model(pick_max, pick_other_node_model)
+
         elif(user_response == "4"):     # share updates with federated leaning 
             print(4)
-        else: print("Not a valid selection. Plesae try again.\n\n")
+
+        else: 
+            print("Not a valid selection. Plesae try again.\n\n")
 
         user_response = input("Select any additional options to perform: \n\n" +
                                 "[1] Register hospital node\n" + 
