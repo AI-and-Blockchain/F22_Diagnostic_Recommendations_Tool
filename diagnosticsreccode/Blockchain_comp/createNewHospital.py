@@ -7,15 +7,16 @@ from algosdk.future import transaction
 # create an account (hospital/node)
 
 def generate_hospital_node():
-
-    a1_private_key, a1_address = account.generate_account() # must have min balance of 100,000 micoalgos
+    pass #remove later
+    private_key, address = account.generate_account() # must have min balance of 100,000 micoalgos
 
     # information for hospital to maintain 
     print("New Hospital Account:")
-    print("address: {}".format(a1_address))
-    print("private key: {}".format(a1_private_key))
-    print("passphrase: {}".format(mnemonic.from_private_key(a1_private_key)))
+    print("address: {}".format(address))
+    print("private key: {}".format(private_key))
+    print("passphrase: {}".format(mnemonic.from_private_key(private_key)))
 
+    return private_key, address
     # fund each account in the main statement 
     # add the model to each hospital node in the main statement 
 
