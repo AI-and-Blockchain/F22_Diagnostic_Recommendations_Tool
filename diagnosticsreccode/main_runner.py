@@ -7,7 +7,7 @@
 #   print output 
 
 from Blockchain_comp import createNewHospital
-
+from Blockchain_comp import hospitalTransactions
 
 def register_hospital_node():
     node_file = open("active_hospitals.txt")                            #add that hospital to the active hospital nodes file
@@ -19,7 +19,7 @@ def print_patient_statistics():
     pass
 
 def train_hospital_model(pick_max, pick_other_node_model):
-    createNewHospital.trainModel(pick_max, pick_other_node_model)
+    hospitalTransactions.trainModel(pick_max, pick_other_node_model)
 
 def share_updates():
     pass
@@ -45,9 +45,20 @@ if __name__ == '__main__':
             print(2)
 
         elif(user_response == "3"):     # train model 
-            pick_max = input("pick max: ")
-            pick_other_node_model = input("pick other node model: ")
-            train_hospital_model(pick_max, pick_other_node_model)
+            pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
+            max_option = eval(pick_max)
+            print(max_option)
+
+            #if user said they want to choose a model, allow them to do so
+            if not max_option:
+                pick_other_node_model = input("pick other node model: \n   " +
+                "1. Logistic Regression \n" +
+                "2. Decision Tree \n" +
+                "3. Random Forest \n")
+            else:
+                pick_other_node_model = 0
+
+            train_hospital_model(max_option, int(pick_other_node_model))
 
         elif(user_response == "4"):     # share updates with federated leaning 
             print(4)

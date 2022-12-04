@@ -115,18 +115,20 @@ def fit_and_predict_model(mod_num, model, x_train, y_train, x_test, y_test):
 	class_report.reset_index(inplace=True)
 	#printing and returning report
 	#print(class_report)
-	clean_class_report_edited = clean_class_report(class_report, len(x_train), len(x_test), mod_num)
+	clean_class_report_edited = clean_class_report(class_report, len(x_train), len(x_test), mod_num, model[0])
 	return clean_class_report_edited
 
-def clean_class_report(class_report, num_x_train, num_x_test, mod_num):
+def clean_class_report(class_report, num_x_train, num_x_test, mod_num, mod_name):
 	'''
 	Just get the classification report dictionary idea is to parse into output the blockchain can store
 	E.g., train_data, test_data, overall_precision, sensitivity, specificity, overall_f1
 	'''
 	class_report_edited = {'model number': mod_num,
+	'model': mod_name,
 							'train size': num_x_train, 
 							'test size': num_x_test,
 							'test precision': round(class_report[class_report['dimensions'] == 'weighted avg']['precision'].item(), 2),
+							'test recall': round(class_report[class_report['dimensions'] == 'weighted avg']['recall'].item(), 2),							
 							'test f1': round(class_report[class_report['dimensions'] == 'weighted avg']['f1-score'].item(), 2),
 							'test sensitivity (recall - yes diabetes)': round(class_report[class_report['dimensions'] == '1.0']['recall'].item(), 2),
 							'test speficity (recall - no diabetes)': round(class_report[class_report['dimensions'] == '0.0']['recall'].item(), 2)
