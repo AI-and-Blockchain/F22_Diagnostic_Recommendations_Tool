@@ -7,7 +7,7 @@
 #   print output 
 
 from Blockchain_comp import createNewHospital
-
+from Blockchain_comp import hospitalTransactions
 
 def register_hospital_node():
     node_file = open('active_hospitals.txt', 'w')                       #add that hospital to the active hospital nodes file
@@ -16,6 +16,7 @@ def register_hospital_node():
     node_file.write('\n')
     node_file.close()
 
+<<<<<<< HEAD
 # put file in ipfs and store the hash in hospital node (make transaction with itself)
 def upload_patient_data(file, hospital_account):
     pass
@@ -26,6 +27,13 @@ def print_patient_statistics():
 def train_hospital_model(pick_max, pick_other_node_model):
     #hospitalTransactions.trainModel(pick_max, pick_other_node_model)
     pass
+=======
+def print_patient_statistics(data_file):
+    hospitalTransactions.printPatientStatistics(data_file)
+
+def train_hospital_model(pick_max, pick_other_node_model):
+    hospitalTransactions.trainModel(pick_max, pick_other_node_model)
+>>>>>>> ca8bc448011505225563b91209a088254e572931
 
 def share_updates():
     pass
@@ -49,12 +57,23 @@ if __name__ == '__main__':
             register_hospital_node()
 
         elif(user_response == "2"):     # print patient statistics
-            print(2)
+            print_patient_statistics('hospital2.csv')
 
         elif(user_response == "3"):     # train model 
-            pick_max = input("pick max: ")
-            pick_other_node_model = input("pick other node model: ")
-            train_hospital_model(pick_max, pick_other_node_model)
+            pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
+            max_option = eval(pick_max)
+            print(max_option)
+
+            #if user said they want to choose a model, allow them to do so
+            if not max_option:
+                pick_other_node_model = input("pick other node model: \n   " +
+                "1. Logistic Regression \n" +
+                "2. Decision Tree \n" +
+                "3. Random Forest \n")
+            else:
+                pick_other_node_model = 0
+
+            train_hospital_model(max_option, int(pick_other_node_model))
 
         elif(user_response == "4"):     # share updates with federated leaning 
             print(4)

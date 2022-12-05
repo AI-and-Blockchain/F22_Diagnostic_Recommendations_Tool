@@ -11,10 +11,14 @@ sys.path.append('../')
 
 from diagnosticsreccode.MachineLearning_comp import run_model
 
+def printPatientStatistics(data_file):
+    pass
+
 
 # train the model on singular hospital node
 def trainModel(pick_max, pick_other_node_model):
-    pass #remove later
+    #pass #remove later
+    #needs to be changed to calling hospital data of registered node
     pima_diabetes = pd.read_csv('../data/hospital2.csv', index_col=0)
     transformedDF = run_model.transform_data(pima_diabetes)
 
