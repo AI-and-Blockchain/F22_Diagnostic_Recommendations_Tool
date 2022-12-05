@@ -22,18 +22,18 @@ def register_hospital_node():
 	'''
 
 	# First update the number of active hospitals 
-	node_file = open('active_hospitals.txt')
+	node_file = open('../data/active_hospitals.txt')
 	num_hospitals = int(node_file.readline())
 	new_num = num_hospitals + 1
 
-	with open("active_hospitals.txt") as f:
+	with open("../data/active_hospitals.txt") as f:
 		lines = f.readlines()
 	lines[0] = str(new_num) + "\n"
-	with open("active_hospitals.txt", "w") as f:
+	with open("../data/active_hospitals.txt", "w") as f:
 		f.writelines(lines)
 
 	# Update file with hospital address and public key 
-	node_file = open('active_hospitals.txt', 'a')                       #add that hospital to the active hospital nodes file
+	node_file = open('../data/active_hospitals.txt', 'a')                       #add that hospital to the active hospital nodes file
 	private_key, address = createNewHospital.generate_hospital_node()   #generate blockchain node/address for hospital
 	hospital_info = str(address) + " " + str(private_key) + "\n"
 	node_file.write(hospital_info)

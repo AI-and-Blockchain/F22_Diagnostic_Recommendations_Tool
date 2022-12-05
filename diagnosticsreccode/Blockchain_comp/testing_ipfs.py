@@ -8,8 +8,10 @@
 
     brew install ipfs       
     ipfs                    # or 'ipfs --version' verify that ipfs installed 
+    
     pip3 install ipfsapi
 
+    pip install ipfshttpclient 
     ipfs init
     ipfs daemon
     # now can run all the files using ipfs
