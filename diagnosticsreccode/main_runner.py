@@ -7,7 +7,7 @@
 #   print output 
 
 from Blockchain_comp import createNewHospital
-#from Blockchain_comp import hospitalTransactions
+from Blockchain_comp import hospitalTransactions
 
 def register_hospital_node():
     '''
@@ -39,12 +39,12 @@ def upload_patient_data(file, hospital_account):
 	pass
 
 def print_patient_statistics(data_file):
-    #hospitalTransactions.printPatientStatistics(data_file)
-    pass
+    hospitalTransactions.printPatientStatistics(data_file)
+    #pass
 
 def train_hospital_model(pick_max, pick_other_node_model):
-    #hospitalTransactions.trainModel(pick_max, pick_other_node_model)
-    pass
+    hospitalTransactions.trainModel(pick_max, pick_other_node_model)
+    #pass
 
 def share_updates():
 	pass
