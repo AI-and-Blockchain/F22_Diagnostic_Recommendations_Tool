@@ -25,19 +25,21 @@ const { cid } = await ipfs.add('Hello world')
 console.info(cid)
 '''
 
-import ipfsApi
+import ipfshttpclient
 
-if __name__ == '__main__':
+# Share TCP connections using a context manager
+with ipfshttpclient.connect() as client:
+	hash = client.add('test.txt')['Hash']
+	print(client.stat(hash))
 
-     # Connect to local node
-    try:
-        api = ipfsapi.connect('127.0.0.1', 5001)
-        print(api)
-    except ipfsapi.exceptions.ConnectionError as ce:
-        print(str(ce))
+# Share TCP connections until the client session is closed
+class SomeObject:
+	def __init__(self):
+		self._client = ipfshttpclient.connect(session=True)
 
-    #new_file = api.add('new.txt')
-    #print(new_file)
+	def do_something(self):
+		hash = self._client.add('test.txt')['Hash']
+		print(self._client.stat(hash))
 
-    #node = await IPFS.create()
-    #data = 'Hello, :)'
+	def close(self):  # Call this when your done
+		self._client.close()
