@@ -10,6 +10,8 @@ def generate_hospital_node():
     pass #remove later
     private_key, address = account.generate_account() # must have min balance of 100,000 micoalgos
 
+    testing = str(address)
+    print(testing)
     # information for hospital to maintain 
     print("New Hospital Account:")
     print("address: {}".format(address))

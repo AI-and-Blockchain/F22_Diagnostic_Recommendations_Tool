@@ -10,16 +10,22 @@ from Blockchain_comp import createNewHospital
 
 
 def register_hospital_node():
-    node_file = open("active_hospitals.txt")                            #add that hospital to the active hospital nodes file
+    node_file = open('active_hospitals.txt', 'w')                       #add that hospital to the active hospital nodes file
     private_key, address = createNewHospital.generate_hospital_node()   #generate blockchain node/address for hospital
-    node_file.write(address + '\n')
+    node_file.write(str(address))
+    node_file.write('\n')
     node_file.close()
+
+# put file in ipfs and store the hash in hospital node (make transaction with itself)
+def upload_patient_data(file, hospital_account):
+    pass
 
 def print_patient_statistics():
     pass
 
 def train_hospital_model(pick_max, pick_other_node_model):
-    createNewHospital.trainModel(pick_max, pick_other_node_model)
+    #hospitalTransactions.trainModel(pick_max, pick_other_node_model)
+    pass
 
 def share_updates():
     pass
@@ -28,6 +34,7 @@ if __name__ == '__main__':
     # default message printed to allow user to choose options
     user_response = input("Welcome to the diabetes diagnostic tool! Select one of the following: \n\n" +
                                 "[1] Register hospital node\n" + 
+                                "[ ] Upload patient statistics\n" +
                                 "[2] Print patient statistics\n" +
                                 "[3] Train hospital model\n" +
                                 "[4] Share model updates\n" +
@@ -36,7 +43,7 @@ if __name__ == '__main__':
     while(True):
         if(user_response == "0"): 
             break
-        
+
         elif(user_response == "1"):     # register a hospital
             # ask if user has a public key already, if not register and return key
             register_hospital_node()

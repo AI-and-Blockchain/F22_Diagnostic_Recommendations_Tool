@@ -49,13 +49,17 @@ def create_asset(public_key_from, private_key_from, public_key_to, from_hospital
 
 # send training results of singular hospital node 
 def uploadModelData(pick_max, default_model):
+    #obtains the needed parameters from the model and store in ipfs
+    #save ipfs address by sending transaction to yourself with it in the notes
     pass
 
 def setUpTransaction(private_key, from_hospital, to_hospital):
+    #initial transaction of 0 eth to ensure hospital nodes can communicate to one another
     pass
 
 # send training results of singular hospital node to another node
 def sendTransaction(from_hospital, from_pk, from_sk, to_hospital, to_pk, to_sk, asset_id):
+    #send the ipfs address to the requested hospital node 
     pass
 
 # revieve updates to training model 
