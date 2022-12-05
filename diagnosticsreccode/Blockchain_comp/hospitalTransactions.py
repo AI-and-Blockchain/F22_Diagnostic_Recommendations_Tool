@@ -22,20 +22,22 @@ def printPatientStatistics(data_file):
 		mean_std[col] = {'mean': round(patient_data[col].mean(),2), 'standard deviation': round(patient_data[col].std(), 2)}
 
 	outcome_count = {}
-	outcome_count['Diabetes'] = len(patient_data[patient_data['Outcome'] == 0])
-	outcome_count['No Diabetes'] = len(patient_data[patient_data['Outcome'] == 1])
+	outcome_count['Diabetes'] = {'count': len(patient_data[patient_data['Outcome'] == 0])}
+	outcome_count['No Diabetes'] = {'count': len(patient_data[patient_data['Outcome'] == 1])}
 
-	print('Column' + ' ' + 'Mean' + ' ' + 'Standard Deviation')
+	#commenting below for printing
 
-	for col in mean_std.keys():
-		print(col + ' ' + str(mean_std[col]['mean']) + ' ' + str(mean_std[col]['standard deviation']))
+	# print('Column' + ' ' + 'Mean' + ' ' + 'Standard Deviation')
 
-	print('Outcome ' + ' ' + 'Count')
-	print('Diabetes' + ' ' + str(outcome_count['Diabetes']))
-	print('No Diabetes' + ' ' + str(outcome_count['No Diabetes']))
+	# for col in mean_std.keys():
+	# 	print(col + ' ' + str(mean_std[col]['mean']) + ' ' + str(mean_std[col]['standard deviation']))
 
-	#need to save this to IPFS
-	return (mean_std, outcome_count)
+	# print('Outcome ' + ' ' + 'Count')
+	# print('Diabetes' + ' ' + str(outcome_count['Diabetes']))
+	# print('No Diabetes' + ' ' + str(outcome_count['No Diabetes']))
+
+	#passing a string 
+	return json.dumps(mean_std) +  '\n' + json.dumps(outcome_count)
 
 
 # train the model on singular hospital node
@@ -66,9 +68,9 @@ def trainModel(pick_max, pick_other_node_model):
 
 	#print(model_output)
 	transact_out = run_model.get_model_output(model_output, pick_max, pick_other_node_model)
-	print(transact_out)
-	#this will need to be replaced with saving to ipfs
-	return transact_out
+	#print(transact_out)
+	#passing string
+	return json.dumps(transact_out)
 	
 # upload the model date of current hospital to ipfs
 def uploadModelData(from_hospital, model_data):
