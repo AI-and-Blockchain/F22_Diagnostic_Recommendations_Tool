@@ -5,7 +5,12 @@ from algosdk.v2client import algod
 from algosdk.future import transaction
 
 # used to determine which hospital specific data came from 
-def initHospitalMap(hospital_node, data):
+def initHospitalMap(cid):
+    # use ipfs to trace cid hash to the data file and download
+
+    # read through data file to determine which hospital data attached to 
+
+    # return the hospital found 
     pass
 
 def isExistsHospital(hospital_node):

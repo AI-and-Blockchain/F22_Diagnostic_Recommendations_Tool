@@ -70,31 +70,69 @@ def trainModel(pick_max, pick_other_node_model):
 	#this will need to be replaced with saving to ipfs
 	return transact_out
 	
-
-def create_asset(public_key_from, private_key_from, public_key_to, from_hospital, to_hospital):
+# upload the model date of current hospital to ipfs
+def uploadModelData(from_hospital, model_data):
+    # need ipfs working 
 	pass
 
-# send training results of singular hospital node 
-def uploadModelData(pick_max, default_model):
-	pass
+# ---------------------------------------------
+algod_address = "http://localhost:4001"
+algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+algod_client = algod.AlgodClient(algod_token, algod_address)
 
-def setUpTransaction(private_key, from_hospital, to_hospital):
-	pass
+# initial transaction of 0 eth to ensure hospital nodes can communicate to one another
+def setUpTransaction(from_hospital, to_hospital, from_pk):
+    account_info = algod_client.account_info(from_hospital)
+
+    # build transaction
+    params = algod_client.suggested_params()
+    params.flat_fee = constants.MIN_TXN_FEE 
+    params.fee = 1000
+    receiver = to_hospital
+    amount = 500
+    note = "transaction setup".encode()
+    unsigned_txn = transaction.PaymentTxn(from_hospital, params, receiver, amount, None, note)
+
+    # sign transaction
+    signed_txn = unsigned_txn.sign(from_pk)
+
+    # submit transaction
+    txid = algod_client.send_transaction(signed_txn)
+
+    # wait for confirmation 
+    try:
+        confirmed_txn = transaction.wait_for_confirmation(algod_client, txid, 4)  
+    except Exception as err:
+        print(err)
+        return
 
 # send training results of singular hospital node to another node
-def sendTransaction(from_hospital, from_pk, from_sk, to_hospital, to_pk, to_sk, asset_id):
-	#obtains the needed parameters from the model and store in ipfs
-	#save ipfs address by sending transaction to yourself with it in the notes
-	pass
+def sendTransaction(from_hospital, to_hospital, from_pk, cid):
+    #TO DO: obtain the ipfs cid 
 
-def setUpTransaction(private_key, from_hospital, to_hospital):
-	#initial transaction of 0 eth to ensure hospital nodes can communicate to one another
-	pass
+    account_info = algod_client.account_info(from_hospital)
 
-# send training results of singular hospital node to another node
-def sendTransaction(from_hospital, from_pk, from_sk, to_hospital, to_pk, to_sk, asset_id):
-	#send the ipfs address to the requested hospital node 
-	pass
+    # build transaction
+    params = algod_client.suggested_params()
+    params.flat_fee = constants.MIN_TXN_FEE 
+    params.fee = 1000
+    receiver = to_hospital
+    amount = 500
+    note = str(cid).encode()
+    unsigned_txn = transaction.PaymentTxn(from_hospital, params, receiver, amount, None, note)
+
+    # sign transaction
+    signed_txn = unsigned_txn.sign(from_pk)
+
+    # submit transaction
+    txid = algod_client.send_transaction(signed_txn)
+
+    # wait for confirmation 
+    try:
+        confirmed_txn = transaction.wait_for_confirmation(algod_client, txid, 4)  
+    except Exception as err:
+        print(err)
+        return
 
 # revieve updates to training model 
 def recieveTransaction(data):
