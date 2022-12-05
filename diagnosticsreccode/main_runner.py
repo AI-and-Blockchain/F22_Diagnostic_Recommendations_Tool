@@ -15,8 +15,8 @@ def register_hospital_node():
     node_file.write(address + '\n')
     node_file.close()
 
-def print_patient_statistics():
-    pass
+def print_patient_statistics(data_file):
+    hospitalTransactions.printPatientStatistics(data_file)
 
 def train_hospital_model(pick_max, pick_other_node_model):
     hospitalTransactions.trainModel(pick_max, pick_other_node_model)
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             register_hospital_node()
 
         elif(user_response == "2"):     # print patient statistics
-            print(2)
+            print_patient_statistics('hospital2.csv')
 
         elif(user_response == "3"):     # train model 
             pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
