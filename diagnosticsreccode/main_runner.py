@@ -62,7 +62,7 @@ def upload_patient_data(hospital_account, pk, data_file):
 
 def print_patient_statistics(data_file):
     '''
-
+    Meant to be a function that a hospital calls to check on the distribution of values of the diabetes patients
     '''
     patientStats = hospitalTransactions.printPatientStatistics(data_file)
     print('Patient statistics at hospital \n', patientStats)
@@ -70,7 +70,8 @@ def print_patient_statistics(data_file):
 
 def train_hospital_model(data_file, pick_max, pick_other_node_model):
     '''
-
+    This function can be called by a hospital operator when they 
+    want to train their local model on the diabetes patients in their hospital
     '''
     model_result_str = hospitalTransactions.trainModel(data_file, pick_max, pick_other_node_model)
     print('Model choosen and result \n', model_result_str)
