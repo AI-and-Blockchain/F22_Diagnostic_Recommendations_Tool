@@ -68,11 +68,11 @@ def print_patient_statistics(data_file):
     print('Patient statistics at hospital \n', patientStats)
     print('Byte size ', get_byte_length(patientStats))
 
-def train_hospital_model(pick_max, pick_other_node_model):
+def train_hospital_model(data_file, pick_max, pick_other_node_model):
     '''
 
     '''
-    model_result_str = hospitalTransactions.trainModel(pick_max, pick_other_node_model)
+    model_result_str = hospitalTransactions.trainModel(data_file, pick_max, pick_other_node_model)
     print('Model choosen and result \n', model_result_str)
     print('Byte size ', get_byte_length(model_result_str))
 
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
         elif(user_response == "3"):     # print patient statistics
             hospital_node = input("Enter hospital node account number: ")
-            # print statistic from the given hospital 
+            # need to pick data file here of active hospital - for now choosing hospital2
             print_patient_statistics('hospital2.csv')
 
         elif(user_response == "4"):     # train model 
@@ -139,7 +139,9 @@ if __name__ == '__main__':
             else:
                 pick_other_node_model = 0
 
-            train_hospital_model(max_option, int(pick_other_node_model))
+            # need to pick data file here of active hospital - for now choosing hospital2
+
+            train_hospital_model('hospital2.csv', max_option, int(pick_other_node_model))
 
         elif(user_response == "5"):     # share updates with federated leaning 
             print(5)
