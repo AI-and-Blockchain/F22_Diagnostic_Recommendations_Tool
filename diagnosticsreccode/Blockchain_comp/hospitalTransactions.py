@@ -1,13 +1,20 @@
 import json
 import base64
-from algosdk import account, mnemonic, constants
-from algosdk.v2client import algod
-from algosdk.future import transaction
 import pandas as pd
-
-from algosdk.future.transaction import AssetConfigTxn, AssetTransferTxn, AssetFreezeTxn, wait_for_confirmation
 import sys
 sys.path.append('../')
+from algosdk.v2client import algod
+from algosdk import mnemonic, constants, account
+from algosdk.future import transaction
+
+algod_address = "https://testnet-algorand.api.purestake.io/ps2"
+algod_token = "Tfz0xEjItu9tEGD7PPCHu6dWVzkMICsE2Lbldptf"
+headers = {
+   "X-API-Key": algod_token,
+}
+
+algod_client = algod.AlgodClient(algod_token, algod_address, headers)
+
 
 from diagnosticsreccode.MachineLearning_comp import run_model
 
@@ -77,21 +84,19 @@ def uploadModelData(from_hospital, model_data):
     # need ipfs working 
 	pass
 
-# ---------------------------------------------
-algod_address = "http://localhost:4001"
-algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-algod_client = algod.AlgodClient(algod_token, algod_address)
-
 # initial transaction of 0 eth to ensure hospital nodes can communicate to one another
 def setUpTransaction(from_hospital, to_hospital, from_pk):
+
+    print("My address: {}".format(from_hospital))
     account_info = algod_client.account_info(from_hospital)
+    print("Account balance: {} microAlgos".format(account_info.get('amount')))
 
     # build transaction
     params = algod_client.suggested_params()
     params.flat_fee = constants.MIN_TXN_FEE 
     params.fee = 1000
-    receiver = to_hospital
-    amount = 500
+    receiver = str(from_hospital)
+    amount = 0
     note = "transaction setup".encode()
     unsigned_txn = transaction.PaymentTxn(from_hospital, params, receiver, amount, None, note)
 
@@ -100,6 +105,7 @@ def setUpTransaction(from_hospital, to_hospital, from_pk):
 
     # submit transaction
     txid = algod_client.send_transaction(signed_txn)
+    print("Signed transaction with txID: {}".format(txid))
 
     # wait for confirmation 
     try:
@@ -108,18 +114,33 @@ def setUpTransaction(from_hospital, to_hospital, from_pk):
         print(err)
         return
 
+    print("Transaction information: {}".format(
+        json.dumps(confirmed_txn, indent=4)))
+    print("Decoded note: {}".format(base64.b64decode(
+        confirmed_txn["txn"]["txn"]["note"]).decode()))
+
+    print("Starting Account balance: {} microAlgos".format(account_info.get('amount')) )
+    print("Amount transfered: {} microAlgos".format(amount) )    
+    print("Fee: {} microAlgos".format(params.fee) ) 
+
+
+    account_info = algod_client.account_info(from_hospital)
+    print("Final Account balance: {} microAlgos".format(account_info.get('amount')) + "\n")
+
 # send training results of singular hospital node to another node
 def sendTransaction(from_hospital, to_hospital, from_pk, cid):
     #TO DO: obtain the ipfs cid 
 
+    print("My address: {}".format(from_hospital))
     account_info = algod_client.account_info(from_hospital)
+    print("Account balance: {} microAlgos".format(account_info.get('amount')))
 
     # build transaction
     params = algod_client.suggested_params()
     params.flat_fee = constants.MIN_TXN_FEE 
     params.fee = 1000
-    receiver = to_hospital
-    amount = 500
+    receiver = str(to_hospital)
+    amount = 0
     note = str(cid).encode()
     unsigned_txn = transaction.PaymentTxn(from_hospital, params, receiver, amount, None, note)
 
@@ -128,6 +149,7 @@ def sendTransaction(from_hospital, to_hospital, from_pk, cid):
 
     # submit transaction
     txid = algod_client.send_transaction(signed_txn)
+    print("Signed transaction with txID: {}".format(txid))
 
     # wait for confirmation 
     try:
@@ -136,6 +158,18 @@ def sendTransaction(from_hospital, to_hospital, from_pk, cid):
         print(err)
         return
 
+    print("Transaction information: {}".format(
+        json.dumps(confirmed_txn, indent=4)))
+    print("Decoded note: {}".format(base64.b64decode(
+        confirmed_txn["txn"]["txn"]["note"]).decode()))
+
+    print("Starting Account balance: {} microAlgos".format(account_info.get('amount')) )
+    print("Amount transfered: {} microAlgos".format(amount) )    
+    print("Fee: {} microAlgos".format(params.fee) ) 
+
+    account_info = algod_client.account_info(from_hospital)
+    print("Final Account balance: {} microAlgos".format(account_info.get('amount')) + "\n")
+
 # revieve updates to training model 
 def recieveTransaction(data):
 	pass
@@ -143,3 +177,4 @@ def recieveTransaction(data):
 
 if __name__ == '__main__':
 	trainModel(False, 2)
+    
