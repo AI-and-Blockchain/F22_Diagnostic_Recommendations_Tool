@@ -146,14 +146,9 @@ if __name__ == '__main__':
 
         elif(user_response == "3"):     # print patient statistics
             hospital_node = input("Enter hospital node account number: ")
-<<<<<<< HEAD
             # print statistic from the given hospital 
             data_file = get_corresponding_dataset(hospital_node)
             print_patient_statistics(data_file)
-=======
-            # need to pick data file here of active hospital - for now choosing hospital2
-            print_patient_statistics('hospital2.csv')
->>>>>>> be417bba4ff4373f09ec74fc1bfaf71f83e8505d
 
         elif(user_response == "4"):     # train model 
             pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
