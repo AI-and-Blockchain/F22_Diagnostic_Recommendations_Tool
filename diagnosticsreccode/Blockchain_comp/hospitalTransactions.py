@@ -48,10 +48,10 @@ def printPatientStatistics(data_file):
 
 
 # train the model on singular hospital node
-def trainModel(pick_max, pick_other_node_model):
+def trainModel(data_file, pick_max, pick_other_node_model):
 	#pass #remove later
 	#needs to be changed to calling hospital data of registered node
-	pima_diabetes = pd.read_csv('../data/hospital2.csv', index_col=0)
+	pima_diabetes = pd.read_csv('../data/' + data_file, index_col=0)
 	transformedDF = run_model.transform_data(pima_diabetes)
 
 	random_state = 30
