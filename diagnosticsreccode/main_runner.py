@@ -25,16 +25,31 @@ def get_byte_length(str):
     '''
     return len(str.encode('utf-16'))
 
+def get_corresponding_dataset(hospital_account):
+    with open("../data/active_hospitals.txt") as f:
+        lines = f.readlines()
+    for line in lines:
+        if hospital_account in line:
+            print(len(line))
+            return line[148:len(line)-1]
+    
+
 def register_hospital_node():
     '''
     First line in file denotes how many active hospital nodes exist, default 0
-    Each line contains the address and public key of the hospital node
+    Each line contains the address and public key of the hospital node.
+    For this example there can only be a maximum of 5 hospital nodes so any additional
+    generation requests will be ignored. 
     '''
 
     # First update the number of active hospitals 
     node_file = open('../data/active_hospitals.txt')
     num_hospitals = int(node_file.readline())
     new_num = num_hospitals + 1
+
+    if(new_num > 5):
+        print("Data currently split amongst 5 hospital nodes. Cannot split further.")
+        return
 
     with open("../data/active_hospitals.txt") as f:
         lines = f.readlines()
@@ -44,11 +59,18 @@ def register_hospital_node():
 
     # Update file with hospital address and public key 
     node_file = open('../data/active_hospitals.txt', 'a')                       #add that hospital to the active hospital nodes file
-    private_key, address = createNewHospital.generate_hospital_node()   #generate blockchain node/address for hospital
-    hospital_info = str(address) + " " + str(private_key) + "\n"
+    private_key, address = createNewHospital.generate_hospital_node()           #generate blockchain node/address for hospital
+    
+    # Assign hospital account a section of the data set depending on which of the 5 hospital nodes it is
+    data_set_part = "hospital" + str(new_num) + ".csv"
+
+    hospital_info = str(address) + " " + str(private_key) + " " + data_set_part + "\n"
     node_file.write(hospital_info)
     
     node_file.close()
+
+    # TO DO assign a dataset to the generated hospital
+    print(get_corresponding_dataset(str(address)))
 
     print("Hospital account created! Remember to fund your account with: https://bank.testnet.algorand.network/")
 
@@ -102,7 +124,8 @@ if __name__ == '__main__':
                                 "[2] Upload patient statistics\n" +
                                 "[3] Print patient statistics\n" +
                                 "[4] Train hospital model\n" +
-                                "[5] Share model updates\n" +
+                                "[5] Get model performance\n" + 
+                                "[6] Share model updates\n" +
                                 "[0] exit\n" +
                                 "\nselect: ")
     while(True):
@@ -116,14 +139,15 @@ if __name__ == '__main__':
         elif(user_response == "2"):
             hospital_node = input("Enter hospital node account number: ")
             private_key = input("Enter private key: ")
-            data_file = input("Enter data file to upload: ")
+            data_file = get_corresponding_dataset(hospital_node)
 
             upload_patient_data(hospital_node, private_key, data_file)
 
         elif(user_response == "3"):     # print patient statistics
             hospital_node = input("Enter hospital node account number: ")
             # print statistic from the given hospital 
-            print_patient_statistics('hospital2.csv')
+            data_file = get_corresponding_dataset(hospital_node)
+            print_patient_statistics(data_file)
 
         elif(user_response == "4"):     # train model 
             pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
@@ -152,6 +176,7 @@ if __name__ == '__main__':
                                 "[2] Upload patient statistics\n" +
                                 "[3] Print patient statistics\n" +
                                 "[4] Train hospital model\n" +
-                                "[5] Share model updates\n" +
+                                "[5] Get model performance\n" +
+                                "[6] Share model updates\n" +
                                 "[0] exit\n" +
                                 "\nselect: ")
