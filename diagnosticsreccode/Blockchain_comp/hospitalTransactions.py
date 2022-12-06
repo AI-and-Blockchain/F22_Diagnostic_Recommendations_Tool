@@ -84,6 +84,9 @@ def uploadModelData(from_hospital, model_data):
     # need ipfs working 
 	pass
 
+def fund_account(hospital_node, private_key):
+    pass
+
 # initial transaction of 0 eth to ensure hospital nodes can communicate to one another
 def setUpTransaction(from_hospital, to_hospital, from_pk):
 

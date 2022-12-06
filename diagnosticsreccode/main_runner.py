@@ -50,6 +50,8 @@ def register_hospital_node():
     
     node_file.close()
 
+    print("Hospital account created! Remember to fund your account with: https://bank.testnet.algorand.network/")
+
 # put file in ipfs and store the hash in hospital node (make transaction with itself)
 def upload_patient_data(hospital_account, pk, data_file):
     '''
@@ -147,7 +149,7 @@ if __name__ == '__main__':
 
         user_response = input("Select any additional options to perform: \n\n" +
                                 "[1] Register hospital node\n" + 
-                                "[2] Upload patient statistics" +
+                                "[2] Upload patient statistics\n" +
                                 "[3] Print patient statistics\n" +
                                 "[4] Train hospital model\n" +
                                 "[5] Share model updates\n" +
