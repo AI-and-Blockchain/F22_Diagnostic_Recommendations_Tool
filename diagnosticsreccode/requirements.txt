@@ -6,3 +6,6 @@ scipy
 matplotlib
 seaborn
 py-algorand-sdk
+requests
+json
+base64
