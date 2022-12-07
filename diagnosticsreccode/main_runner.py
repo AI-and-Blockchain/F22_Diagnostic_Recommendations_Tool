@@ -51,8 +51,7 @@ def get_transaction_note(hospital_node):
     
     # decode txn_note
     note = base64.b64decode(txn_note).decode()
-
-    print(note)
+    return note
 
 def register_hospital_node():
     '''
@@ -89,18 +88,20 @@ def register_hospital_node():
     
     node_file.close()
 
-    # TO DO assign a dataset to the generated hospital
+    # assign a dataset to the generated hospital
     print("Data partition assigned: " + get_corresponding_dataset(str(address)))
 
     print("Hospital account created! Remember to fund your account with: https://bank.testnet.algorand.network/\n\n")
 
 # put file in ipfs and store the hash in hospital node (make transaction with itself)
-def upload_patient_data(hospital_account, account2, pk, data_file):
+def send_patient_data(hospital_account, hospital_to, pk, data_file):
     '''
-    Send a transaction from an account to itself to store the patient data it's has
+    Send a transaction with the patient statistics. Can be used as a way to store
+    data on the blockchain (the to and from hospital accounts are the same) or as 
+    a way to send another hospital information. 
     '''
     patient_stats = hospitalTransactions.printPatientStatistics(data_file)
-    hospitalTransactions.sendTransaction(hospital_account, account2, pk, patient_stats)
+    hospitalTransactions.sendTransaction(hospital_account, hospital_account, pk, patient_stats)
 
 def print_patient_statistics(data_file):
     '''
@@ -110,7 +111,7 @@ def print_patient_statistics(data_file):
     print('Patient statistics at hospital \n', patientStats)
     print('Byte size ', get_byte_length(patientStats))
 
-def train_hospital_model(data_file, pick_max, pick_other_node_model):
+def train_hospital_model(hospital_node, pk, data_file, pick_max, pick_other_node_model):
     '''
     This function can be called by a hospital operator when they 
     want to train their local model on the diabetes patients in their hospital
@@ -119,16 +120,22 @@ def train_hospital_model(data_file, pick_max, pick_other_node_model):
     print('Model choosen and result \n', model_result_str)
     print('Byte size ', get_byte_length(model_result_str))
 
+    # need to store the results of the trained model --> send transaction from account to itself
+    hospitalTransactions.sendTransaction(hospital_node, hospital_node, pk, model_result_str)
+
+
 def send_model_performance(from_hospital, to_hospital, private_key):
     '''
     Function accesses the from_hospital account transactions, finding the most recent
     model updata data. That data is then sent via another transaction to the to_hospital 
     account node. 
+
+    Assumptions: train_model has been run on from_hospital data at least once
     '''
-
-
-def add_new_model_performance():
-    pass 
+    # get most recent transaction (train_model results)
+    model_results = get_transaction_note(from_hospital)
+    # forward those model results to another hospital account
+    hospitalTransactions.sendTransaction(from_hospital, to_hospital, private_key, model_results)
 
 def vote_hospital_leader():
     '''
@@ -163,11 +170,14 @@ def share_updates():
         hospital_node = hospital_line[:58]
         hospital_pk = hospital_line[58:146]    #length: 88
         if(hospital_node != lead_node):
-            break
-            #send_model_performance(hospital_node, lead_node, hospital_pk)
-    # Lead node aggregates model data 
+            send_model_performance(hospital_node, lead_node, hospital_pk)
+
+    # Lead node aggregates model data and does something with it
 
     # Lead node sends updates to all participating hospital nodes 
+    for hospital_line in hospitals_info:
+        hospital_node = hospital_line[:58]
+        # send that data aggrregate to each node (including lead node)
     return
 
 def reset_active_hospitals():
@@ -198,11 +208,11 @@ if __name__ == '__main__':
         
         elif(user_response == "2"):
             hospital_node = input("Enter hospital node account number: ")
+            hospital_to = input("Enter hospital node account to send data to: ")
             private_key = input("Enter private key: ")
-            account2 = input("second account: ")
             data_file = get_corresponding_dataset(hospital_node)
 
-            upload_patient_data(hospital_node, account2, private_key, data_file)
+            send_patient_data(hospital_node, hospital_to, private_key, data_file)
 
         elif(user_response == "3"):     # print patient statistics
             hospital_node = input("Enter hospital node account number: ")
@@ -212,6 +222,7 @@ if __name__ == '__main__':
 
         elif(user_response == "4"):     # train model 
             hospital_node = input("Enter hospital node account number: ")
+            pk = input("Enter private key: ")
             pick_max = input("pick max, enter True to choose max model and False to explicitly choose a model ")
             max_option = eval(pick_max)
             print(max_option)
@@ -227,13 +238,13 @@ if __name__ == '__main__':
 
             # need to pick data file here of active hospital - for now choosing hospital2
             data_file = get_corresponding_dataset(hospital_node)
-            train_hospital_model(data_file, max_option, int(pick_other_node_model))
+            train_hospital_model(hospital_node, pk, data_file, max_option, int(pick_other_node_model))
         
         elif(user_response == "5"):
             hospital_node = input("Enter hospital node account number: ")
+            hospital_to = input("Ender hospital node account to send model update to: ")
             private_key = input("Enter private key: ")
-            model_data = input("Copy in most recent model update: ")
-
+            send_model_performance(hospital_node, hospital_to, private_key)
 
         elif(user_response == "6"):     # share updates with federated leaning 
             print(6)

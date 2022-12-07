@@ -4,7 +4,13 @@ from algosdk import account, mnemonic, constants
 from algosdk.v2client import algod
 from algosdk.future import transaction
 
-# used to determine which hospital specific data came from 
+'''
+This file is intended to be used if IPFS is adopted into the architecture. 
+The two functions are set up to recieve the cid (path to stored files) and verify
+who owns the node storing it. 
+'''
+
+# create a mapping of which hospital node contains what data
 def initHospitalMap(cid):
     # use ipfs to trace cid hash to the data file and download
 
@@ -13,5 +19,6 @@ def initHospitalMap(cid):
     # return the hospital found 
     pass
 
+# used to determine if requested data exists in a hospital node
 def isExistsHospital(hospital_node):
     pass
