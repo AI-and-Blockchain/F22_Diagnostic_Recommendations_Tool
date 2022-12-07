@@ -8,31 +8,51 @@
 from algosdk.v2client import algod
 from algosdk import mnemonic
 from algosdk import transaction
+import random
+import requests
+import json
+import base64
+from Blockchain_comp import createNewHospital, hospitalTransactions
 
+# Purestake key setup to allow use of Algorand blockchain 
 algod_address = "https://testnet-algorand.api.purestake.io/ps2"
 algod_token = "Tfz0xEjItu9tEGD7PPCHu6dWVzkMICsE2Lbldptf"
 headers = {"X-API-Key": algod_token,}
-
 algod_client = algod.AlgodClient(algod_token, algod_address, headers)
 
+# Connnect to AlgoExplorer API so that transaction information can be accessed locally
+base_url = "https://algoindexer.testnet.algoexplorerapi.io/"
 
-from Blockchain_comp import createNewHospital
-from Blockchain_comp import hospitalTransactions
 
 def get_byte_length(str):
     '''
-    return byte length of string
+    Return byte length of string
     '''
     return len(str.encode('utf-16'))
 
 def get_corresponding_dataset(hospital_account):
+    '''
+    Return the split dataset partition that's accociated with the provided hospital account
+    '''
     with open("../data/active_hospitals.txt") as f:
         lines = f.readlines()
     for line in lines:
         if hospital_account in line:
-            print(len(line))
+            #print(len(line))
             return line[148:len(line)-1]
     
+def get_transaction_note(hospital_node):
+    api_url = base_url + "/v2/accounts/" + hospital_node + "/transactions"
+    print(api_url)
+    response = requests.get(api_url)
+
+    # single out the 'note' fields from the entire json string
+    txn_note = response.json()['transactions'][0]['note']  
+    
+    # decode txn_note
+    note = base64.b64decode(txn_note).decode()
+
+    print(note)
 
 def register_hospital_node():
     '''
@@ -70,17 +90,17 @@ def register_hospital_node():
     node_file.close()
 
     # TO DO assign a dataset to the generated hospital
-    print(get_corresponding_dataset(str(address)))
+    print("Data partition assigned: " + get_corresponding_dataset(str(address)))
 
-    print("Hospital account created! Remember to fund your account with: https://bank.testnet.algorand.network/")
+    print("Hospital account created! Remember to fund your account with: https://bank.testnet.algorand.network/\n\n")
 
 # put file in ipfs and store the hash in hospital node (make transaction with itself)
-def upload_patient_data(hospital_account, pk, data_file):
+def upload_patient_data(hospital_account, account2, pk, data_file):
     '''
     Send a transaction from an account to itself to store the patient data it's has
     '''
     patient_stats = hospitalTransactions.printPatientStatistics(data_file)
-    hospitalTransactions.sendTransaction(hospital_account, hospital_account, pk, patient_stats)
+    hospitalTransactions.sendTransaction(hospital_account, account2, pk, patient_stats)
 
 def print_patient_statistics(data_file):
     '''
@@ -99,6 +119,30 @@ def train_hospital_model(data_file, pick_max, pick_other_node_model):
     print('Model choosen and result \n', model_result_str)
     print('Byte size ', get_byte_length(model_result_str))
 
+def send_model_performance(from_hospital, to_hospital, private_key):
+    '''
+    Function accesses the from_hospital account transactions, finding the most recent
+    model updata data. That data is then sent via another transaction to the to_hospital 
+    account node. 
+    '''
+
+
+def add_new_model_performance():
+    pass 
+
+def vote_hospital_leader():
+    '''
+    Function used in conjunction with share_update(). Used to vote in the
+    lead hospital node that the remaining nodes will send model updates to. 
+    '''
+    hospital_lead_node_num = random.randint(1,5)
+    with open("../data/active_hospitals.txt") as f:
+        hospitals_info = f.readlines()
+    
+    # assign account node the lead value
+    hospital_lead_node = (hospitals_info[hospital_lead_node_num])[:58]
+    return hospital_lead_node
+
 def share_updates():
     '''
     Intended to connect to a federated learning implementation that would take 
@@ -109,23 +153,38 @@ def share_updates():
     '''
     # Assumed that at this point, all 5 hospital nodes have been created and trained their individual models
     # Determine the lead hospital node
+    lead_node = vote_hospital_leader()
 
     # Lead node requests model data from other hospitals
-
+    with open("../data/active_hospitals.txt") as f:
+        hospitals_info = f.readlines()
+    
+    for hospital_line in hospitals_info:
+        hospital_node = hospital_line[:58]
+        hospital_pk = hospital_line[58:146]    #length: 88
+        if(hospital_node != lead_node):
+            break
+            #send_model_performance(hospital_node, lead_node, hospital_pk)
     # Lead node aggregates model data 
 
     # Lead node sends updates to all participating hospital nodes 
+    return
 
-    pass
+def reset_active_hospitals():
+    file = open('../data/active_hospitals.txt', 'w')
+    file.write('0\n')
+    file.close()
 
 if __name__ == '__main__':
+    #get_transaction_note("6BTW2JU3WCFYMXHP7UECGXLMNVPKBYGRKBZFKBGPUZFEKI5ZTT3UDHBO6M")
+    
     # default message printed to allow user to choose options
     user_response = input("Welcome to the diabetes diagnostic tool! Select one of the following: \n\n" +
                                 "[1] Register hospital node\n" +
-                                "[2] Upload patient statistics\n" +
+                                "[2] Send patient statistics\n" +
                                 "[3] Print patient statistics\n" +
                                 "[4] Train hospital model\n" +
-                                "[5] Get model performance\n" + 
+                                "[5] Send model performance\n" + 
                                 "[6] Share model updates\n" +
                                 "[0] exit\n" +
                                 "\nselect: ")
@@ -140,9 +199,10 @@ if __name__ == '__main__':
         elif(user_response == "2"):
             hospital_node = input("Enter hospital node account number: ")
             private_key = input("Enter private key: ")
+            account2 = input("second account: ")
             data_file = get_corresponding_dataset(hospital_node)
 
-            upload_patient_data(hospital_node, private_key, data_file)
+            upload_patient_data(hospital_node, account2, private_key, data_file)
 
         elif(user_response == "3"):     # print patient statistics
             hospital_node = input("Enter hospital node account number: ")
@@ -168,19 +228,25 @@ if __name__ == '__main__':
             # need to pick data file here of active hospital - for now choosing hospital2
             data_file = get_corresponding_dataset(hospital_node)
             train_hospital_model(data_file, max_option, int(pick_other_node_model))
+        
+        elif(user_response == "5"):
+            hospital_node = input("Enter hospital node account number: ")
+            private_key = input("Enter private key: ")
+            model_data = input("Copy in most recent model update: ")
 
-        elif(user_response == "5"):     # share updates with federated leaning 
-            print(5)
+
+        elif(user_response == "6"):     # share updates with federated leaning 
+            print(6)
 
         else: 
             print("Not a valid selection. Plesae try again.\n\n")
 
         user_response = input("Select any additional options to perform: \n\n" +
                                 "[1] Register hospital node\n" + 
-                                "[2] Upload patient statistics\n" +
+                                "[2] Send patient statistics\n" +
                                 "[3] Print patient statistics\n" +
                                 "[4] Train hospital model\n" +
-                                "[5] Get model performance\n" +
+                                "[5] Send model performance\n" +
                                 "[6] Share model updates\n" +
                                 "[0] exit\n" +
                                 "\nselect: ")

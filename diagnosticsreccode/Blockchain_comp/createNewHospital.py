@@ -4,6 +4,9 @@ from algosdk import account, mnemonic, constants
 from algosdk.v2client import algod
 from algosdk.future import transaction
 
+def fund_account():
+    pass
+
 # create an account (hospital/node)
 
 def generate_hospital_node():
@@ -17,6 +20,7 @@ def generate_hospital_node():
     print("address: {}".format(address))
     print("private key: {}".format(private_key))
     print("passphrase: {}".format(mnemonic.from_private_key(private_key)))
+    print()
 
     return private_key, address
     # fund each account in the main statement 
