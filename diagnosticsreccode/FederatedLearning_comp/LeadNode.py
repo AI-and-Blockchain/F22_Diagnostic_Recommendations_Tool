@@ -23,7 +23,9 @@ class LeadNode:
         A federated averaging algorithm will be run on the following data from
         the dictionary of model data stored in this LeadNode:
 
-        {overall_precision, sensitivity, specificity, overall_f1}
+        {overall_precision, sensitivity, specificity, overall_f1, recall}
+
+        This algorithm is essentially just a weighted average of each statistic.
         '''
 
         # Declare variables to store model info:
