@@ -7,7 +7,7 @@ import torch
 import numpy as np
 
 # Function to add Laplacian noise:
-def laplacian_mechanism(dataset, sensitivity, epsilon):
+def laplacianMechanism(dataset, sensitivity, epsilon):
     # Calculate the scale parameter (beta):
     beta = sensitivity / epsilon
 
