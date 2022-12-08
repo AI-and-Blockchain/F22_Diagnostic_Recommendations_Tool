@@ -155,7 +155,8 @@ def get_model_output(models_output, pick_max, pick_other_node_model):
 
 			if class_report_model['test f1'] > max_f1:
 				max_model = model
-
+				max_f1 = class_report_model['test f1']
+				
 		if max_model != 0:
 			return models_output[max_model]
 		else:
@@ -164,7 +165,7 @@ def get_model_output(models_output, pick_max, pick_other_node_model):
 
 
 if __name__ == '__main__':
-	pima_diabetes = pd.read_csv('../data/hospital2.csv', index_col=0)
+	pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
 	transformedDF = transform_data(pima_diabetes)
 
 	models = get_models()
