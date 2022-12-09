@@ -165,7 +165,7 @@ def get_model_output(models_output, pick_max, pick_other_node_model):
 
 
 if __name__ == '__main__':
-	pima_diabetes = pd.read_csv('../data/hospital1.csv', index_col=0)
+	pima_diabetes = pd.read_csv('../data/diabetes_val_corrected.csv', index_col=0)
 	transformedDF = transform_data(pima_diabetes)
 
 	models = get_models()
@@ -180,7 +180,7 @@ if __name__ == '__main__':
 		mod_classification_report = fit_and_predict_model(mod_num, model, x_train, y_train, x_test, y_test)
 		model_output[mod_num] = mod_classification_report
 
-	print(model_output)
+	#print(model_output)
 	print(get_model_output(model_output, True, 0))
 
 
